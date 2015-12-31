@@ -1,0 +1,88 @@
+/* 
+ * Copyright (c) 20151231
+ * All rights reserved.
+ * file name：liner list add &delete
+ * althor: gao yijun
+ * data： 20151331
+ * version： V1.0 
+ * function to realize add and delete of liner list
+*/
+
+
+#include <iostream>
+
+using namespace std;
+
+#define LIST_INIT_SIZE    100	//initialize the size of list
+
+#define LISTINCREMENT   10	//increment of the data size
+
+typedef int ElemType;      //define type
+
+typedef int Status;      //define type
+
+typedef struct{
+	ElemType *elem;		//storge data
+	int length;		//current length
+	int listsize;		//volume of the list（sizeof(ElemType) as unit）
+}SqList;
+
+
+Status InitList_Sq(SqList &L){
+	//creat a empty list L
+	L.elem = (ElemType *)malloc(LIST_INIT_SIZE * sizeof(ElemType));
+	if(!L.elem)
+		exit(1);		//failed to allocate space
+	L.length = 0;		//length of empty list is 0
+	L.listsize = LIST_INIT_SIZE;		//initialize listsize
+	return true;
+}
+
+Status ListInsert_Sq(SqList &L,int i,ElemType e)
+{
+	//insert e at the i number of L
+	//i range from 1<=i<=ListLength_Sq(L)+1
+	if(i <1 || i> L.length + 1)
+		return false;	//i is illegal
+	if(L.length >= L.listsize)	//The current storage space is full,increase allocation
+	{
+		ElemType *newbase = (ElemType *)realloc(L.elem,(L.listsize + LISTINCREMENT )* sizeof(ElemType));
+		if(!newbase)
+			exit(1);	
+		L.elem = newbase;
+		L.listsize += LISTINCREMENT;
+	}
+
+	ElemType *q = &(L.elem[i-1]);
+
+	for(ElemType *p = &(L.elem[L.length-1]);p>=q;--p)
+		*(p+1) = *p;	
+
+	*q = e;	
+	++L.length;		
+	return true;
+}
+
+Status ListDelete_Sq(SqList &L,int i)
+{
+	if((i<1)||(i>L.length))
+		return false;	
+	ElemType *p = &(L.elem[i-1]);	
+	ElemType e = *p;	
+	ElemType *q = L.elem + L.length-1;
+	for(++p;p<=q;++p)	
+		*(p-1) = *p;	
+	--L.length;	
+	return e;
+}
+
+void main()
+{
+	SqList L;
+	InitList_Sq(L);
+	ListInsert_Sq(L,1,2);
+	ElemType e = ListDelete_Sq(L,1);
+	cout<<e<<endl;
+	system("PAUSE");
+	return;
+}
