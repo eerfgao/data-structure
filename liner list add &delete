@@ -79,7 +79,7 @@ Status ListDelete_Sq(SqList &L,int i)
 void main()
 {
 	SqList L;
-	InitList_Sq(L);
+	InitList_Sq(L);//quote not pointer
 	ListInsert_Sq(L,1,2);
 	ElemType e = ListDelete_Sq(L,1);
 	cout<<e<<endl;
